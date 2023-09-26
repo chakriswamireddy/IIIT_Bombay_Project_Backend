@@ -1,0 +1,25 @@
+name: Docker Image Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to DockerHub
+      run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    - name: Build and push Docker images
+      run: |
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/my-web-app-frontend:latest ./frontend
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/my-web-app-backend:latest ./backend
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-web-app-frontend:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-web-app-backend:latest
+
